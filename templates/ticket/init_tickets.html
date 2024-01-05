@@ -1,0 +1,159 @@
+{% extends "dashboard.html" %} 
+{% block content%} 
+{% load static %}
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+
+  form {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<div class="container" style="margin: auto; background-color:white; border-radius: 5px;padding:10px;">
+  <div class="row" style="margin: auto; justify-content: center; ">
+    <div class="col">
+      
+           <p>
+            Last Search :
+            <strong>{{ last_searched.searched_value }} </strong>
+            <small> at {{ last_searched.created_at}}</small>
+          </p>
+       
+     
+
+          <label for="inputField">Mobile Number or Card Number:</label>
+          <input class="form-control form-control-lg" type="text" id="inputField" name="inputField" required />
+          <button class="btn btn-primary" onclick="verifyEntry()">Search</button>
+          <button class="btn btn-danger" onclick="raiseTickt()">Raise a Ticket</button>
+          <button class="btn btn-success" onclick="verifyEntry()">Forward To</button>
+          <div id="result"></div>
+
+          <script>
+            function verifyEntry() {
+              var inputValue = document.getElementById("inputField").value;
+
+              // Perform AJAX request to verify the entry
+              var xhr = new XMLHttpRequest();
+              xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                  if (xhr.status === 200) {
+                    // Parse the JSON response
+                    var response = JSON.parse(xhr.responseText);
+
+                    // Update the table with the response data
+                    document.getElementById("customerID").innerText =
+                      response.info["Customer ID"];
+                    document.getElementById("name").innerText =
+                      response.info["Name"];
+                    document.getElementById("dob").innerText =
+                      response.info["DOB"];
+                    document.getElementById("cardNo").innerText =
+                      response.info["Card No."];
+                    document.getElementById("cardType").innerText =
+                      response.info["Card Type"];
+                    document.getElementById("mobile").innerText =
+                      response.info["mobile"];
+                  } else {
+                    // Handle the error case
+                    document.getElementById("result").innerHTML =
+                      "Error: " + xhr.status;
+                  }
+                }
+              };
+
+              // Replace 'your_verify_url' with the actual URL to your verification endpoint
+              xhr.open(
+                "GET",
+                "http://127.0.0.1:8000/verify_entry/?inputValue=" + inputValue,
+                true
+              );
+              xhr.send();
+            }
+          </script>
+     
+    </div>
+    <div class="col-6">
+      <div class="card">
+      
+        <table class="table table-strip" style="margin: 5px; border:0px">
+          <tr>
+            <td>Customer ID</td>
+            <td id="customerID"></td>
+          </tr>
+          <tr>
+            <td>Name</td>
+            <td id="name"></td>
+          </tr>
+          <tr>
+            <td>Date of Birth</td>
+            <td id="dob" style="color: red"></td>
+          </tr>
+          <tr>
+            <td>Card Number</td>
+            <td id="cardNo" style="color: red"></td>
+          </tr>
+          <tr>
+            <td>Card Type</td>
+            <td id="cardType"></td>
+          </tr>
+          <tr>
+            <td>Mobile No.</td>
+            <td id="mobile"></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- <div class="col" style="border: 1px solid black">Column</div> -->
+  </div>
+</div>
+<br>
+
+
+<script>
+    function raiseTickt() {
+        // Get the ID from the input field
+        var id = document.getElementById('inputField').value;
+
+        // Validate if the ID is not empty
+        if (id.trim() === '') {
+            alert('Please enter a valid ID.');
+            return;
+        }
+
+        // Build the URL for the form view with the provided ID
+        var formUrl = "{% url 'raiseTicket' %}?id=" + id;
+
+        // Redirect to the form URL in the same window
+        window.location.href = formUrl;
+    }
+</script>
+{% endblock content %}

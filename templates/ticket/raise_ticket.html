@@ -1,0 +1,130 @@
+{% extends "dashboard.html" %} 
+{% block content%} 
+{% load static %}
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+
+  form {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+
+  input[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #45a049;
+  }
+</style>
+
+
+<div class="container" style="margin: auto; background-color:white; border-radius: 5px;padding:10px;">
+
+  <div class="card">
+
+  <div class="row">
+    <div class="col">
+      <div class="mb-3">
+        <h4>Customer Query Details</h4>
+
+      </div>
+        <form id="queryForm" method="post" action="{% url 'query_form' %}">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" value="Submit" />
+        </form>
+
+        
+    </div>
+    <div class="col">
+     
+    </div>
+  </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+          // Function to update query dropdown based on selected category
+          function updateQueryDropdown() {
+            var categorySelect = document.getElementById("id_category");
+            var querySelect = document.getElementById("id_query");
+            var selectedCategory =
+              categorySelect.options[categorySelect.selectedIndex].value;
+
+            // Make AJAX request to get queries based on the selected category
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                // Update the query dropdown with the received data
+                var data = JSON.parse(xhr.responseText);
+                querySelect.innerHTML = "";
+                data.queries.forEach(function (query) {
+                  var option = document.createElement("option");
+                  option.value = query;
+                  option.text = query;
+                  querySelect.add(option);
+                });
+              }
+            };
+
+            // Replace 'your_get_queries_url' with the actual URL to your get_queries endpoint
+            xhr.open(
+              "GET",
+              "http://127.0.0.1:8000/get_queries/?category=" + selectedCategory,
+              true
+            );
+            xhr.send();
+          }
+
+          // Attach the function to the change event of the category dropdown
+          document.getElementById("id_category").addEventListener("change", updateQueryDropdown);
+
+          // Initial call to populate the query dropdown based on the default selected category
+          updateQueryDropdown();
+</script>
+
+
+<script>
+    function raiseTickt() {
+        // Get the ID from the input field
+        var id = document.getElementById('inputField').value;
+
+        // Validate if the ID is not empty
+        if (id.trim() === '') {
+            alert('Please enter a valid ID.');
+            return;
+        }
+
+        // Build the URL for the form view with the provided ID
+        var formUrl = "{% url 'dashboard' %}?id=" + id;
+
+        // Redirect to the form URL in the same window
+        window.location.href = formUrl;
+    }
+</script>
+{% endblock content %}

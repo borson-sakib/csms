@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Customer Service SaaS</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+
+      header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2em 0;
+      }
+
+      section {
+        max-width: 800px;
+        margin: 2em auto;
+        padding: 2em;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+
+      h1,
+      h2 {
+        color: #333;
+      }
+
+      p {
+        line-height: 1.6;
+        color: #555;
+      }
+
+      button {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      footer {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 1em 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Your Customer Service SaaS</h1>
+      <p>
+        Deliver exceptional customer support with our powerful SaaS solution.
+      </p>
+    </header>
+
+    <section>
+      <h2>Register</h2>
+      <form method="post" action="{% url 'register' %}">
+        {% csrf_token %} {{ form.as_p }}
+        <button type="submit">Register</button>
+      </form>
+    </section>
+
+    <footer>
+      <p>&copy; 2023 Your Customer Service SaaS. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
