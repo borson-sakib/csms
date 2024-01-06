@@ -2,6 +2,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+import uuid
+
+
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, username, password=None):
         if not email:
@@ -74,3 +77,19 @@ class SearchedEntry(models.Model):
     searched_value = models.CharField(max_length=255)
     searched_by = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    
+def generate_complain_id():
+    return str(uuid.uuid4().hex[:8])  # Example: Using the first 8 characters of a UUID
+
+class Complaint(models.Model):
+    complain_id = models.CharField(primary_key=True, max_length=8, default=generate_complain_id, editable=False)
+    customer_id = models.CharField(max_length=100)
+    complained_through = models.CharField(max_length=100)
+    mobile_no = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=20)
+    category = models.CharField(max_length=100)
+    query = models.CharField(max_length=100)
+    other_query = models.TextField()
+    remarks = models.TextField()

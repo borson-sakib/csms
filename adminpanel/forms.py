@@ -19,11 +19,24 @@ class UploadCsvForm(forms.Form):
 
 
 class QueryForm(forms.Form):
-    complain_id = forms.CharField(label='Complain ID', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    customer_id = forms.CharField(label='Customer ID', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    complained_through = forms.CharField(label='Complained through', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    URGENCY_CHOICES = [
+        ('urgent', 'Urgent'),
+        ('regular', 'Regular'),
+        ('less_important', 'Less Important'),
+    ]
+
+    urgency = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple(attrs={'class':'form-check-input '}),
+        choices=URGENCY_CHOICES,
+    )
+    complain_id = forms.CharField(label='Complain ID', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control','readonly':True}))
+    customer_id = forms.CharField(label='Customer ID', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control','readonly':True}))
+    complained_through = forms.CharField(label='Complained through', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control','readonly':True}))
+    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control','readonly':True}))
+
+
+
     mobile_no= forms.CharField(label='Mobile No', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    name = forms.CharField(label='Name', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}))
     account_number = forms.CharField(label='Account Number', max_length=20, widget=forms.TextInput(attrs={'class': 'form-control'}))
     category = forms.ModelChoiceField(queryset=Frequest_query_set.objects.values_list('category', flat=True).distinct(),widget=forms.Select(attrs={'class': 'form-control'}))
     query = forms.ChoiceField(choices=[],widget=forms.Select(attrs={'class': 'form-control'}))  # Empty choices for initial rendering

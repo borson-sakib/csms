@@ -151,7 +151,8 @@ def query_form(request):
 def get_queries(request):
     category = request.GET.get('category', None)
     if category:
-        queries = Frequest_query_set.objects.filter(category=category).values_list('query', 'query')
+        queries = Frequest_query_set.objects.filter(category=category).values_list('query')
         data = {'queries': list(queries)}
+        # print(data)
         return JsonResponse(data)
     return JsonResponse({'queries': []})

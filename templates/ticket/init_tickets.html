@@ -51,7 +51,13 @@
      
 
           <label for="inputField">Mobile Number or Card Number:</label>
-          <input class="form-control form-control-lg" type="text" id="inputField" name="inputField" required />
+          <!-- <input class="form-control form-control-lg" type="text" id="inputField" name="inputField" required /> -->
+
+          <div class="input-group">
+            <input type="text" class="form-control form-control-lg" placeholder="Recipient's username" aria-label="Mobile Number or Card Number" aria-describedby="button-addon2" id="inputField" name="inputField" required>
+            <!-- <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button> -->
+            <button class="btn btn-primary" onclick="verifyEntry()">Search</button>
+          </div>
           <button class="btn btn-primary" onclick="verifyEntry()">Search</button>
           <button class="btn btn-danger" onclick="raiseTickt()">Raise a Ticket</button>
           <button class="btn btn-success" onclick="verifyEntry()">Forward To</button>

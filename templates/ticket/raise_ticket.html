@@ -15,53 +15,134 @@
 
   label {
     display: block;
-    margin-top: 10px;
+    margin-top: 0px;
+    font-size: medium;
+
   }
 
   input,
   textarea {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
-    margin-bottom: 10px;
+  
     box-sizing: border-box;
+    border: 0px;
   }
 
   input[type="submit"] {
-    background-color: #4caf50;
+    background-color: #fa5a42;
     color: white;
     cursor: pointer;
+    width: 20%;
+    margin: auto;
   }
 
   input[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #fff;
+    color: #fa5a42;
+    border: 2px solid #fa5a42;
   }
+
+  .row{
+
+    margin-left: 0px;
+
+  }
+  .form-control[readonly]{
+    border: 1px solid rgb(170, 170, 170);
+    opacity: 1;
+    background-color: #a19c9c94;
+    border-radius: 0px;
+  }
+
+  
 </style>
 
 
-<div class="container" style="margin: auto; background-color:white; border-radius: 5px;padding:10px;">
+<div class="container" style="background-color:white; border-radius: 5px;padding:10px; border: 2px solid #fa5a42; ">
 
-  <div class="card">
 
-  <div class="row">
-    <div class="col">
-      <div class="mb-3">
+      <div class="mb-3" style="text-align: center;padding:10px; border-bottom:2px solid #fa5a42">
         <h4>Customer Query Details</h4>
 
       </div>
-        <form id="queryForm" method="post" action="{% url 'query_form' %}">
+
+        <form id="queryForm" class="row g-3" style="max-width: 100%; margin:auto;" method="post" action="{% url 'query_form' %}">
           {% csrf_token %}
-          {{ form.as_p }}
-          <input type="submit" value="Submit" />
+
+            <div class="row" style="background-color: #fa5a42; color:#fff;">
+              <div class="col-2">
+                <label for="urgency">Importance:</label>
+              </div>
+
+            {% for checkbox in form.urgency %}
+            <div class="col">
+              <div class="form-check form-check-inline">
+                {{ checkbox }}
+                <!-- <label class="form-check-label" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label> -->
+              </div>
+            </div>
+              
+            {% endfor %}
+            </div>
+
+            <div class="col-md-8">
+               <div class="row">
+                     <div class="col-md-12">
+                      {{ form.category.label_tag }}
+                      {{ form.category }}
+                    </div>
+                    <div class="col-md-12">
+                      {{ form.query.label_tag }}
+                      {{ form.query }}
+                    <button class="btn" style="width: 20%; font-size: small; border:1px solid #fff;padding:0px;float:right;margin-top:3px;color:#fff;background-color:#fa5a42" type="button" onclick="toggleVisibility()">+ Other Query</button>
+                    </div>
+                   
+
+                    <div class="col-md-12" id="otherQueryContainer" style="display: none;">
+                      {{ form.other_query.label_tag }}
+                      {{ form.other_query }}
+                    </div>
+                    <div class="col-md-12">
+                      {{ form.remarks.label_tag }}
+                      {{ form.remarks }}
+                    </div>
+
+              </div>
+
+             
+              
+            </div>
+            <div class="col-md-4">
+               <div class="row">
+                     <div class="col-md-12">
+                      {{ form.complain_id.label_tag }}
+                      {{ form.complain_id }}
+                    </div>
+                    <div class="col-md-12">
+                      {{ form.customer_id.label_tag }}
+                      {{ form.customer_id }}
+                    </div>
+                    <div class="col-md-12">
+                      {{ form.complained_through.label_tag }}
+                      {{ form.complained_through }}
+                    </div>
+                    <div class="col-md-12">
+                      {{ form.name.label_tag }}
+                      {{ form.name }}
+                    </div>
+
+              </div>
+              
+            </div>
+
+     
+
+              <input class="btn" type="submit" value="Submit" />
         </form>
 
         
-    </div>
-    <div class="col">
-     
-    </div>
-  </div>
-  </div>
+  
 </div>
 
 
@@ -82,6 +163,7 @@
               if (xhr.readyState === 4 && xhr.status === 200) {
                 // Update the query dropdown with the received data
                 var data = JSON.parse(xhr.responseText);
+                
                 querySelect.innerHTML = "";
                 data.queries.forEach(function (query) {
                   var option = document.createElement("option");
@@ -127,4 +209,29 @@
         window.location.href = formUrl;
     }
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $('.form-check-input').click(function () {
+      // Uncheck all other checkboxes in the same row
+      $(this).closest('.row').find('.form-check-input').not(this).prop('checked', false);
+    });
+  });
+</script>
+
+<script>
+  function toggleVisibility() {
+    var otherQueryContainer = $('#otherQueryContainer');
+    otherQueryContainer.toggle();
+  }
+</script>
+<!-- <script>
+  $(document).ready(function() {
+    $('.id_query').select2({
+      width: '100%',  // Set the width to 100% or adjust as needed
+    });
+  });
+</script> -->
 {% endblock content %}
