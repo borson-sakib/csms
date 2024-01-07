@@ -8,6 +8,7 @@ from .views import verify_entry
 from .views import query_form
 from .views import get_queries
 from .views import raise_ticket
+from .views import readonly_report
 
 
 urlpatterns = [
@@ -20,5 +21,7 @@ urlpatterns = [
     path('query_form/', query_form, name='query_form'),
     path('get_queries/', get_queries, name='get_queries'),
     path('raiseTicket/', raise_ticket, name='raiseTicket'),
+    path('readonly-report/', readonly_report, name='readonly_report'),
+
 
 ]

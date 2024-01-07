@@ -2,15 +2,19 @@ from django.http import HttpResponse
 from django.shortcuts import render 
 
 # myapp/views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
+
 from .forms import RegistrationForm
 from .forms import UploadCsvForm
 from .forms import QueryForm
 from .models import CustomerRepository
 from .models import Frequest_query_set
 from .models import SearchedEntry
+from .models import complaints_info
+from .models import complain_details
 from django.contrib.auth import login
 import csv
+import json
 from io import TextIOWrapper
 from django.http import JsonResponse
 
@@ -140,11 +144,45 @@ def query_form(request):
     form = QueryForm()
 
     if request.method == 'POST':
-        form = QueryForm(request.POST)
-        if form.is_valid():
-            # Handle the form submission as needed
-            # For example, you can access the selected values using form.cleaned_data['category'] and form.cleaned_data['query']
-            pass
+        stored_queries_json = request.POST.get('stored_queries')
+        
+        # print(request.POST.get('urgency'))
+        # print(request.POST.get('customer_id'))
+        # print(request.POST.get('complained_through'))
+        # print(request.POST.get('name'))
+        # print(request.POST.get('remarks'))
+        
+        
+        complaints_info.objects.create(
+            urgency=request.POST.get('urgency'),
+            customer_id=request.POST.get('customer_id'),
+            complained_through=request.POST.get('complained_through'),
+            name=request.POST.get('name'),
+            mobile_no=request.POST.get('mobile_no'),
+            remarks=str(request.POST.get('remarks'))
+            )
+        # # Convert the JSON data to a Python list
+        stored_queries = json.loads(stored_queries_json)
+        comp_id = complaints_info.objects.filter(complained_through=request.POST.get('complained_through')).order_by('-auto_id').first()
+        
+        print(comp_id.complain_id)
+
+        # Process the stored_queries data (you can save it to the database, etc.)
+        for query in stored_queries:
+            # Perform actions with each query, e.g., save to the database
+            complain_details.objects.create(
+                complain_id=comp_id,
+                category = query['category'],
+                query= query['query'],
+                other_query = query['other_query']
+            )
+            print(f"Category: {query['category']}, Query: {query['query']},Other Query : {query['other_query']}")
+            
+        complaint_info = get_object_or_404(complaints_info, complain_id=str(comp_id.complain_id))
+        complaint_details_list = complain_details.objects.filter(complain_id=complaint_info)
+        # Return a response or redirect to another page
+        return render(request, 'ticket/single_report.html', {'complaint_info': complaint_info,'complaint_details_list': complaint_details_list,})
+        # return HttpResponse(stored_queries)
 
     return render(request, 'raise_ticket.html', {'form': form})
 
@@ -156,3 +194,21 @@ def get_queries(request):
         # print(data)
         return JsonResponse(data)
     return JsonResponse({'queries': []})
+
+
+def readonly_report(request):
+    # Retrieve data from the models and merge based on complain_id
+    complaints = complaints_info.objects.all()
+    details = complain_details.objects.all()
+
+    # Create a dictionary to store merged data
+    report_data = {}
+
+    for complaint in complaints:
+        report_data[complaint.complain_id] = {
+            'complaint_info': complaint,
+            'complaint_details': details.filter(complain_id=complaint)
+        }
+
+    # Pass the merged data to the template
+    return render(request, 'ticket/report.html', {'report_data': report_data})

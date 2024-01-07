@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Readonly Report</title>
+</head>
+<body>
+    <h1>Readonly Report</h1>
+
+    {% for complain_id, data in report_data.items %}
+        <h2>{{ complain_id }}</h2>
+        
+        <!-- Display data from complaints_info model -->
+        <p>Urgency: {{ data.complaint_info.urgency }}</p>
+        <p>Customer ID: {{ data.complaint_info.customer_id }}</p>
+        <!-- Add more fields as needed -->
+
+        <!-- Display data from complain_details model -->
+        {% for detail in data.complaint_details %}
+            <p>Category: {{ detail.category }}</p>
+            <p>Query: {{ detail.query }}</p>
+            <p>Other Query: {{ detail.other_query }}</p>
+            <!-- Add more fields as needed -->
+        {% endfor %}
+        
+        <hr>
+    {% endfor %}
+</body>
+</html>

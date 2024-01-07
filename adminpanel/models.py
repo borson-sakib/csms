@@ -80,16 +80,34 @@ class SearchedEntry(models.Model):
     
     
 def generate_complain_id():
-    return str(uuid.uuid4().hex[:8])  # Example: Using the first 8 characters of a UUID
+    # Assuming you want to start with 1 and increment by 1
+    last_complaint = complaints_info.objects.order_by('-auto_id').first()
+    if last_complaint:
+        return last_complaint.auto_id + 1
+    return 1
 
-class Complaint(models.Model):
-    complain_id = models.CharField(primary_key=True, max_length=8, default=generate_complain_id, editable=False)
+
+class complaints_info(models.Model):
+    complain_id = models.CharField(primary_key=True,max_length=12, unique=True, editable=False)
+    auto_id = models.IntegerField(auto_created=True)
+    urgency = models.CharField(max_length=100)
     customer_id = models.CharField(max_length=100)
     complained_through = models.CharField(max_length=100)
     mobile_no = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
-    account_number = models.CharField(max_length=20)
-    category = models.CharField(max_length=100)
+    remarks = models.CharField(max_length=1000,blank=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.complain_id:
+            self.auto_id = generate_complain_id()
+            self.complain_id = f'TCKT{self.auto_id:08d}'
+        super().save(*args, **kwargs)
+        
+class complain_details(models.Model):
+    complain_id=models.ForeignKey(complaints_info, on_delete=models.CASCADE)
+    category = models.CharField(max_length=200)
     query = models.CharField(max_length=100)
-    other_query = models.TextField()
-    remarks = models.TextField()
+    other_query = models.CharField(max_length=1000,blank=True)
+    
+    def __str__(self):
+        return self.complain_id

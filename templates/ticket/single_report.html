@@ -1,0 +1,119 @@
+
+{% extends "dashboard.html" %} 
+{% block content%} 
+{% load static %}
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+
+  form {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  label {
+    display: block;
+    margin-top: 0px;
+    font-size: medium;
+
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 8px;
+  
+    box-sizing: border-box;
+    border: 0px;
+  }
+
+  input[type="submit"] {
+    background-color: #fa5a42;
+    color: white;
+    cursor: pointer;
+    width: 20%;
+    margin: auto;
+  }
+
+  input[type="submit"]:hover {
+    background-color: #fff;
+    color: #fa5a42;
+    border: 2px solid #fa5a42;
+  }
+
+  .row{
+
+    margin-left: 0px;
+
+  }
+  .form-control[readonly]{
+    border: 1px solid rgb(170, 170, 170);
+    opacity: 1;
+    background-color: #a19c9c94;
+    border-radius: 0px;
+  }
+
+  
+</style>
+
+
+<div class="container" style="background-color:white; border-radius: 5px;padding:10px; border: 2px solid #fa5a42; ">
+
+
+      <div class="mb-3" style="text-align: center;padding:10px; border-bottom:2px solid #fa5a42">
+        <h4>Customer Query Details</h4>
+
+      </div>
+
+      <div class="mb-3" >
+
+        <div style="width: 50%;margin: auto; border: 1px solid black;padding:2%">
+
+
+            <h2>Complaint ID: {{ complaint_info.complain_id }}</h2>
+    
+                <!-- Display data from complaints_info model -->
+                <p>Urgency: {{ complaint_info.urgency }}</p>
+                <p>Customer ID: {{ complaint_info.customer_id }}</p>
+                <!-- Add more fields as needed -->
+
+                <!-- Display data from complain_details model -->
+                {% for detail in complaint_details_list %}
+                    <!-- <p> <strong>Query: {{ detail.query }} || Other Query : {{ detail.other_query }}</strong> <small>Category: {{ detail.category }}</small></p> -->
+
+                    <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+                    <div class="card-header" >
+                    
+                    Query: {{ detail.query }} ||
+                    Other Query : {{ detail.other_query }}
+                    </div>
+                    <div class="card-body" style="background-color: green;color:white;padding:2px;">
+                    
+                        <small>Category: {{ detail.category }}</small>
+                    </div>
+                    </div>
+                    <br>
+                    
+                    
+                    <!-- Add more fields as needed -->
+                {% endfor %}
+
+        </div>
+        
+      </div>
+
+        
+
+        
+  
+</div>
+
+
+
+
+
+
+{% endblock content %}
